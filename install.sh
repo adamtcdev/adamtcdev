@@ -29,9 +29,6 @@ echo "$deps"
 echo "=============================================="
 echo
 
-read -p "Proceed? [y/N] " yn
-[[ "$yn" =~ ^[Yy]$ ]] || exit 0
-
 sudo apt install --no-install-recommends -y $deps
 
 echo
