@@ -1,35 +1,8 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-PKG=ubuntu-desktop
-
-echo "[*] Updating package lists…"
-sudo apt update
-
-echo "[*] Extracting Depends only…"
-
-deps=$(
-  apt-cache show "$PKG" \
-  | awk '
-      /^Depends:/ {
-        sub(/^Depends: /, "")
-        gsub(",", "\n")
-        print
-      }
-    ' \
+sudo apt update && sudo apt install --no-install-recommends -y $(
+  apt-cache show ubuntu-desktop \
+  | awk '/^Depends:/ {sub(/^Depends: /,""); gsub(",", "\n"); print}' \
   | sed 's/([^)]*)//g' \
   | awk -F'|' '{print $1}' \
   | xargs -n1 \
   | sort -u
 )
-
-echo
-echo "=== Packages to be installed (Depends only) ==="
-echo "$deps"
-echo "=============================================="
-echo
-
-sudo apt install --no-install-recommends -y $deps
-
-echo
-echo "[✓] Done. ubuntu-desktop meta-package NOT installed."
